@@ -7,12 +7,13 @@ from datetime import datetime
 
 class Post(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, blank=False, null=False, unique=True)
+    slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
 
     def save(self, **kwargs):
+        # TODO: slug field should be unique with site/blog
         # default values for slug and date
         if not self.get('slug', False):
             self['slug'] = slugify(self['name'])

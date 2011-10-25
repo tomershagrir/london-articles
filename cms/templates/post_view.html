@@ -2,6 +2,7 @@
 
 {% piece "content" %}
 <h1 class="name">{{ post.name }}</h1>
+<br style="clear: both"; />
 <div class="text">{{ post.text }}</div>
 {% body_scripts "cms:jeditable" %}
 <script type="text/javascript">
@@ -15,6 +16,9 @@
    });
   })
 </script>
+<form action="delete/" method="POST">
+  <input  value="delete" type="submit" />
+</form>
 
 {% endpiece %}
 
