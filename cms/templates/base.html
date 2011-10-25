@@ -46,6 +46,9 @@
     <body>
         <header>
         <h1>{{ current_site.name }}</h1>
+        {% if user.is_authenticated() %}
+        <span>logged in as: <strong>{{ user.username }}</strong> | <a href="/admin/logout">logout</a></span>
+        {% endif %}
         </header>
         <div id="content">
             {% container "content" %}

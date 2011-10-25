@@ -1,14 +1,16 @@
 {% base "base.html" %}
 
 {% piece "content" %}
+{% if user.is_authenticated() %}
 <form method="POST" name="create-post" action="create-post/">
   <span>Create a new post: <input type="text" name="name" /> <input type="submit" value="submit" /></span>
 </form>
+{% endif %}
 <ul>
   {% for post in posts %}
   <li>
     <h1><a href='/blog/{{ post.slug }}/'>{{ post.name }}</a></h1>
-    <span>@ {{ post.date.strftime("%m/%d/%Y %H:%M") }}</span> 
+    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }}</span> 
     <p>{{ post.text }}</p>
   </li>
   {% endfor %}

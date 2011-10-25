@@ -4,6 +4,8 @@
 <h1 class="name">{{ post.name }}</h1>
 <br style="clear: both"; />
 <div class="text">{{ post.text }}</div>
+
+{% if user.is_authenticated() %}
 {% body_scripts "cms:jeditable" %}
 <script type="text/javascript">
   $(document).ready(function () {
@@ -19,6 +21,7 @@
 <form action="delete/" method="POST">
   <input  value="delete" type="submit" />
 </form>
+{% endif %}
 
 {% endpiece %}
 

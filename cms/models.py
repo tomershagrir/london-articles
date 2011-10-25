@@ -9,6 +9,7 @@ class Post(models.Model):
     class Meta:
         ordering = ('date',) 
     name = models.CharField(max_length=255)
+    author = models.ForeignKey('auth.User', blank=False, null=False)
     slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
