@@ -10,16 +10,13 @@ admin.site.root_url = '/admin/'
 admin.site.load_from_applications()
 admin.site.ajax_site = ajax.site
 
-from cms.views import post_list, post_view, post_save_name
+import cms
 
 if settings.LOCAL:
     url_patterns = patterns('', url_serve(settings.STATIC_URL[1:], settings.STATIC_ROOT))
 
 url_patterns += patterns('public.views',
-        (r'^blog/$', post_list, {}, "post_list"),
-        (r'^blog/(?P<slug>[\w-]+)/$', post_view, {}, "post_view"),
-        (r'^blog/(?P<slug>[\w-]+)/save-name/$', post_save_name, {}, "post_save_name"),
-        (r'^blog/(?P<slug>[\w-]+)/save-text/$', post_save_text, {}, "post_save_text"),
+        (r'^blog/', include(cms.urls)),
         (r'^ajax/', include(ajax.site.urls)),
         (r'^admin/', include(admin.site.urls)),
 )

@@ -14,7 +14,7 @@ class Post(models.Model):
 
     def save(self, **kwargs):
         # default values for slug and date
-        if self.get('slug', '') == '':
+        if not self.get('slug', False):
             self['slug'] = slugify(self['name'])
 
         if self.get('date', None) is None:

@@ -1,6 +1,9 @@
 {% base "base.html" %}
 
 {% piece "content" %}
+<form method="POST" name="create-post" action="create-post/">
+  <span>Create a new post: <input type="text" name="name" /> <input type="submit" value="submit" /></span>
+</form>
 <ul>
   {% for post in posts %}
   <li>
