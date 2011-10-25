@@ -1,0 +1,20 @@
+{% base "base.html" %}
+
+{% piece "content" %}
+<h1 class="name">{{ post.name }}</h1>
+<div class="text">{{ post.text }}</div>
+{% body_scripts "cms:jeditable" %}
+<script type="text/javascript">
+  $(document).ready(function () {
+   $('.name').editable('save-name/');
+   $('.text').editable('save-text/', {
+      type: 'textarea',
+      cancel: 'Cancel',
+      submit: 'Submit',
+      rows: 35
+   });
+  })
+</script>
+
+{% endpiece %}
+
