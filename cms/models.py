@@ -6,6 +6,8 @@ from london.apps.auth.models import User
 from datetime import datetime
 
 class Post(models.Model):
+    class Meta:
+        ordering = ('date',) 
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
