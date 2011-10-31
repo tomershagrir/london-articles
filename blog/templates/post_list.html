@@ -2,7 +2,7 @@
 
 {% piece "content" %}
 {% if user.is_authenticated() %}
-<form method="POST" name="create-post" action="create-post/">
+<form method="POST" name="create-post" action="+create-post/">
   <span>Create a new post: <input type="text" name="name" /> <input type="submit" value="submit" /></span>
 </form>
 {% endif %}
@@ -10,7 +10,7 @@
   {% for post in posts %}
   <li>
     <h1><a href='/blog/{{ post.slug }}/'>{{ post.name }}</a></h1>
-    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} {% if post.is_draft %}<strong>draft</strong>{% endif %}</span> 
+    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} | {{ post.get_categories() }}{% if post.is_draft %},<strong>draft</strong>{% endif %}</span> 
     <p>{{ post.text }}</p>
   </li>
   {% endfor %}

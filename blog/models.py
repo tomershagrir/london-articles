@@ -7,6 +7,12 @@ from datetime import datetime
 
 import markdown2
 
+class Category(models.Model):
+    class Meta:
+        ordering = ('name',)
+    name = models.CharField(max_length=50)
+
+
 class Post(models.Model):
     class Meta:
         ordering = ('date',) 
@@ -18,6 +24,9 @@ class Post(models.Model):
     source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
+    
+    def get_categories(self):
+        return ",".join(pc['category']['name'] for pc in self['categories'])
 
     def save(self, **kwargs):
         # TODO: slug field should be unique with site/blog
@@ -36,4 +45,7 @@ class Post(models.Model):
             self['text'] = markdown2.markdown(source)
         return super(Post, self).save(**kwargs)
 
+class PostCategory(models.Model):
+    post = models.ForeignKey(Post, related_name="categories")
+    category = models.ForeignKey(Category, related_name="posts")
 

@@ -17,7 +17,7 @@ site.register_scripts_dir('blog', os.path.join(
 
 from london.apps.auth.authentication import login_required
 
-from models import Post
+from models import Post, Category
 
 @render_template('post_list')
 def post_list(request):
@@ -29,7 +29,7 @@ def post_list(request):
 @render_template('post_view')
 def post_view(request, slug):
     post = get_object_or_404(request.site['posts'], slug=slug)
-    return {'post': post}
+    return {'post': post, 'categories': post.get_categories()}
 
 @login_required
 def post_save_name(request, slug):
@@ -80,3 +80,13 @@ def post_publish(request, slug):
         post.save()
     return HttpResponseRedirect(reverse("post_view", kwargs={'slug': post['slug']}))
 
+@login_required
+def save_categories(request, slug):
+    if request.method == 'POST':
+        post = get_object_or_404(request.site['posts'], slug=slug)
+        categories = request.POST['value']
+        post['categories'].delete()
+        for category in categories.split(","):
+            category,created = Category.query().get_or_create(name=category.strip().lower())
+            post['categories'].get_or_create(category=category)
+    return HttpResponse(post.get_categories())
