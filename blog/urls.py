@@ -1,7 +1,7 @@
 
 from london.urls.defining import patterns
 
-urls = patterns('cms.views',
+urls = patterns('views',
         (r'^$', 'post_list', {}, "post_list"),
         (r'^create-post/$', 'post_create', {}, "post_create"),
         (r'^(?P<slug>[\w-]+)/$', 'post_view', {}, "post_view"),
