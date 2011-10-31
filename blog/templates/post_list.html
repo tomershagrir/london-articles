@@ -10,7 +10,7 @@
   {% for post in posts %}
   <li>
     <h1><a href='/blog/{{ post.slug }}/'>{{ post.name }}</a></h1>
-    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }}</span> 
+    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} {% if post.is_draft %}<strong>draft</strong>{% endif %}</span> 
     <p>{{ post.text }}</p>
   </li>
   {% endfor %}

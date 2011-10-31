@@ -21,7 +21,10 @@ from models import Post
 
 @render_template('post_list')
 def post_list(request):
-    return {'posts': request.site['posts']}
+    posts = request.site['posts']
+    if not request.user.is_authenticated():
+        posts = posts.filter(is_draft=False)
+    return {'posts': posts}
 
 @render_template('post_view')
 def post_view(request, slug):
@@ -39,7 +42,7 @@ def post_save_name(request, slug):
 def post_get_markdown(request, slug):
     post = get_object_or_404(request.site['posts'], slug=slug)
     source = post['source'] if post['source'] is not None else ''
-    return HttpResponse("")
+    return HttpResponse(source)
 
 @login_required
 def post_save_text(request, slug):
@@ -64,4 +67,16 @@ def post_delete(request, slug):
         post = get_object_or_404(request.site['posts'], slug=slug)
         post.delete()
     return HttpResponseRedirect(reverse("post_list"))
+
+@login_required
+def post_publish(request, slug):
+    if request.method == 'POST':
+        post = get_object_or_404(request.site['posts'], slug=slug)
+        action = request.POST['action']
+        if action == 'publish':
+            post['is_draft'] = False
+        elif action == 'unpublish':
+            post['is_draft'] = True
+        post.save()
+    return HttpResponseRedirect(reverse("post_view", kwargs={'slug': post['slug']}))
 

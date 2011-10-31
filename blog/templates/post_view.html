@@ -12,6 +12,9 @@
 </div>
 
 {% if user.is_authenticated() %}
+{% if post.is_draft %}
+<p>This post is a draft</p>
+{% endif %}
 {% body_scripts "blog:jeditable" %}
 <script type="text/javascript">
   $(document).ready(function () {
@@ -20,7 +23,7 @@
       loadurl: 'markdown/',
       type: 'textarea',
       cancel: 'Cancel',
-      submit: 'Submit',
+      submit: 'Save',
       rows: 35
    });
   })
@@ -28,6 +31,10 @@
 <form action="delete/" method="POST">
   <input  value="delete" type="submit" />
 </form>
+<form action="publish/" method="POST">
+  <input name="action" value="{% if post.is_draft == False %}unpublish{% else %}publish{% endif %}" type="submit" />
+</form>
+
 {% endif %}
 
 {% endpiece %}

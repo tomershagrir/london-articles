@@ -14,6 +14,7 @@ class Post(models.Model):
     author = models.ForeignKey('auth.User', blank=False, null=False)
     slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
+    is_draft = models.BooleanField(default=True, blank=False, null=False)
     source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
@@ -26,6 +27,9 @@ class Post(models.Model):
 
         if self.get('date', None) is None:
             self['date'] = datetime.now()
+
+        if self.get('is_draft', None) is None:
+            self['is_draft'] = True
 
         source = self.get('source',  None)
         if source is not None:
