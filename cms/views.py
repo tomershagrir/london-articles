@@ -2,7 +2,7 @@
 
 import os
 from london.shortcuts import get_object_or_404
-from london.templates import render_template
+from london.templates import render_template, render_to_response
 from london.http import HttpResponse, HttpResponseRedirect
 from london.urls import reverse
 
@@ -19,9 +19,10 @@ from london.apps.auth.authentication import login_required
 
 from models import Post
 
-@render_template('post_list')
-def post_list(request):
-    return {'posts': request.site['posts']}
+def post_list(request, template='post_list', site=None):
+    site = site or request.site
+    posts = site['posts']
+    return render_to_response(request, template, {'posts': posts})
 
 @render_template('post_view')
 def post_view(request, slug):
