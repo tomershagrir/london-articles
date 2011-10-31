@@ -2,6 +2,7 @@ from london.db import models
 from london.utils.slugs import slugify
 from london.apps.sites.models import Site
 from london.apps.auth.models import User
+from london.utils.safestring import mark_safe
 
 from datetime import datetime
 
@@ -15,6 +16,9 @@ class Post(models.Model):
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
 
+    def __unicode__(self):
+        return self['name']
+
     def save(self, **kwargs):
         # TODO: slug field should be unique with site/blog
         # default values for slug and date
@@ -26,4 +30,6 @@ class Post(models.Model):
 
         return super(Post, self).save(**kwargs)
 
+    def get_content(self):
+        return mark_safe(self['text'])
 
