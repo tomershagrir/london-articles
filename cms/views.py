@@ -5,6 +5,7 @@ from london.shortcuts import get_object_or_404
 from london.templates import render_template, render_to_response
 from london.http import HttpResponse, HttpResponseRedirect
 from london.urls import reverse
+from london.apps.sites.models import Site
 
 from london.apps.themes.registration import register_template
 register_template("post_list", mirroring="post_list.html")
@@ -20,7 +21,12 @@ from london.apps.auth.authentication import login_required
 from models import Post
 
 def post_list(request, template='post_list', site=None):
-    site = site or request.site
+    if isinstance(site, basestring):
+        site = Site.query().get(name=site)
+
+    if not site:
+        site = request.site
+
     posts = site['posts']
     return render_to_response(request, template, {'posts': posts})
 
