@@ -5,6 +5,8 @@ from london.apps.auth.models import User
 
 from datetime import datetime
 
+import markdown2
+
 class Post(models.Model):
     class Meta:
         ordering = ('date',) 
@@ -12,6 +14,7 @@ class Post(models.Model):
     author = models.ForeignKey('auth.User', blank=False, null=False)
     slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
+    source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
 
@@ -24,6 +27,9 @@ class Post(models.Model):
         if self.get('date', None) is None:
             self['date'] = datetime.now()
 
+        source = self.get('source',  None)
+        if source is not None:
+            self['text'] = markdown2.markdown(source)
         return super(Post, self).save(**kwargs)
 
 

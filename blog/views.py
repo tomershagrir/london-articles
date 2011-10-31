@@ -36,9 +36,15 @@ def post_save_name(request, slug):
     return HttpResponse(post['name'])
 
 @login_required
+def post_get_markdown(request, slug):
+    post = get_object_or_404(request.site['posts'], slug=slug)
+    source = post['source'] if post['source'] is not None else ''
+    return HttpResponse("")
+
+@login_required
 def post_save_text(request, slug):
     post = get_object_or_404(request.site['posts'], slug=slug)
-    post['text'] = request.POST['value']
+    post['source'] = request.POST['value']
     post.save()
     return HttpResponse(post['text'])
 

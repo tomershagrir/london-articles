@@ -7,6 +7,6 @@ urls = patterns('blog.views',
         (r'^(?P<slug>[\w-]+)/$', 'post_view', {}, "post_view"),
         (r'^(?P<slug>[\w-]+)/save-name/$', 'post_save_name', {}, "post_save_name"),
         (r'^(?P<slug>[\w-]+)/save-text/$', 'post_save_text', {}, "post_save_text"),
-        (r'^(?P<slug>[\w-]+)/save-text/$', 'post_save_text', {}, "post_save_text"),
+        (r'^(?P<slug>[\w-]+)/markdown/$', 'post_get_markdown', {}, "post_get_markdown"),
         (r'^(?P<slug>[\w-]+)/delete/$', 'post_delete', {}, "post_delete"),
 )
