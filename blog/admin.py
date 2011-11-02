@@ -5,7 +5,7 @@ from models import Post
 class ModulePost(admin.CrudModule):
     model = Post
     list_display = ('slug', 'name','date', 'text')
-    readonly_fields = ('slug','date')
+    readonly_fields = ('date',)
 
 class AppBlog(admin.AdminApplication):
     title = 'Blog'
