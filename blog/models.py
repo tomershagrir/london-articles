@@ -6,7 +6,6 @@ from london.utils.safestring import mark_safe
 from london.urls import reverse
 
 from datetime import datetime
-from thumbs import ImageWithThumbsField
 
 import markdown2
 
