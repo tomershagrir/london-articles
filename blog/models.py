@@ -30,6 +30,7 @@ class Post(models.Model):
     author = models.ForeignKey('auth.User', blank=False, null=False)
     slug = models.SlugField(max_length=255, blank=False, null=False)
     text = models.TextField()
+    teaser = models.TextField()
     is_draft = models.BooleanField(default=True, blank=False, null=False)
     source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
