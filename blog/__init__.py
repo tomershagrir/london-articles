@@ -1,3 +1,5 @@
+import os
+
 from london.apps.themes.registration import register_template
 register_template("post_list", mirroring="post_list.html")
 register_template("post_view", mirroring="post_view.html")
