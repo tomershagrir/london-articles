@@ -34,7 +34,6 @@ class Post(models.Model):
     source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
-    photos = ImageWithThumbsField(upload_to='images', sizes=((125,125),(300,300)))
     
     def get_categories(self):
         return ",".join(pc['category']['name'] for pc in self['categories'])
