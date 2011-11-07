@@ -1,4 +1,4 @@
-import os
+import os, urlparse
 ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 LOCAL = True
@@ -58,9 +58,13 @@ INSTALLED_APPS = (
         'london.apps.admin',
         'london.apps.themes',
         'london.apps.redirects',
+        'london.apps.pagination',
         'london.apps.notifications',
         'blog',
         )
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(ROOT_PATH, 'static')
+
+UPLOADS_URL = urlparse.urljoin(STATIC_URL, 'uploads/')
+UPLOADS_ROOT = os.path.join(STATIC_ROOT, 'uploads')
