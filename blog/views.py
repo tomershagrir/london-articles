@@ -14,7 +14,7 @@ from london.apps.auth.authentication import get_request
 from models import Post, Category
 
 def is_writer(user):
-    return user.is_authenticated() and user['groups'].filter(name="writers")
+    return user.is_authenticated() and (user['is_superuser'] or user['groups'].filter(name="writers"))
 
 def user_is_writer(func):
     def _inner(*args, **kwargs):
@@ -36,13 +36,12 @@ def list(request, template='post_list', site=None):
         posts = posts.filter(is_draft=False)
 
     return render_to_response(request, template, 
-            {'posts': posts, 'is_writer': is_writer(request.user)})
+            {'posts': posts})
 
 def view(request, slug, template="post_view"):
     post = get_object_or_404(request.site['posts'], slug=slug)
     return render_to_response(request, template, {'post': post, 
-                            'categories': post.get_categories(),
-                            'is_writer': is_writer(request.user)})
+                            'categories': post.get_categories()})
 
 @user_is_writer
 def save_name(request, slug):
