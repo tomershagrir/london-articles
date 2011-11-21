@@ -1,0 +1,15 @@
+{% base "base.html" %}
+
+{% piece "content" %}
+<h2 class="title">{{ post.date.strftime("%d/%m/%Y") }} {{ post.name }}</h2>
+<p class="text">{{ post.text }}</p>
+{% body_scripts "ajax:jquery,blog:jeditable" %}
+<script type="text/javascript">
+  $(document).read(function () {
+   $('.title').editable('save-title/');
+   $('.text').editable('save-text/', {type: 'textarea'});
+  })
+</script>
+
+{% endpiece %}
+

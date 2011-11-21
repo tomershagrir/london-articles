@@ -1,0 +1,49 @@
+{% base "base.html" %}
+
+{% piece "content" %}
+<h1 class="name">{{ post.name }}</h1>
+{% if post.is_draft %}
+  <span><strong>draft</strong></span>
+{% endif %}
+
+<br style="clear: both"; />
+<div class="text">
+  {% if post.text %}
+    {{ post.text }}
+  {% else %}
+    Click to edit
+  {% endif %}
+</div>
+<div>
+  <span><strong>Categories:</strong></span>
+</div>
+<div style="font-size:12px" class="categories">{% if categories %}{{ categories }}{% else %}click to edit{% endif %}
+</span>
+</div>
+
+{% if user.is_authenticated() %}
+{% body_scripts "blog:jeditable" %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('.name').editable('save-name/');
+    $('.categories').editable('save-categories/');
+    $('.text').editable('save-text/', {
+      loadurl: 'markdown/',
+      type: 'textarea',
+      cancel: 'Cancel',
+      submit: 'Save',
+      rows: 35
+    });
+  })
+</script>
+<form action="delete/" method="POST">
+  <input  value="delete" type="submit" />
+</form>
+<form action="publish/" method="POST">
+  <input name="action" value="{% if post.is_draft == False %}unpublish{% else %}publish{% endif %}" type="submit" />
+</form>
+
+{% endif %}
+
+{% endpiece %}
+

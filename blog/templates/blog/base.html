@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+    <head>
+      <title>{{ current_site.name }}</title>
+      <meta charset="utf-8" />
+      <style type="text/css">
+        body {
+          width: 800px;
+          margin: 0 auto;
+          font-family: "Helvetica Neue",Arial,sans-serif;
+        }
+
+        header {
+          border-bottom: 1px solid black;
+        }
+
+        #content ul {
+          list-style: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+        
+        #content li {
+          padding: 10px;
+        }
+        #content a {
+          color: black;
+          text-decoration: none;
+        }
+        #content li:hover {
+          background-color: #eee;
+        }
+
+        #content h1 {
+          font-size: 24px;
+          margin-bottom: 0px;
+        }
+
+        #content span {
+          font-size: 12px;
+        }
+      </style>
+    {% head_scripts "ajax:jquery" %}
+    </head>
+
+    <body>
+        <header>
+        <h1>{{ current_site.name }}</h1>
+        {% if user.is_authenticated() %}
+        <span>logged in as: <strong>{{ user.username }}</strong> | <a href="/admin/logout">logout</a></span>
+        {% endif %}
+        </header>
+        <div id="content">
+            {% container "content" %}
+        </div>
+    </body>
+</html>
