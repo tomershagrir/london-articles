@@ -6,6 +6,7 @@ from london.templates import render_template, render_to_response
 from london.http import HttpResponse, HttpResponseRedirect
 from london.urls import reverse
 from london.utils.slugs import slugify
+from london.apps.ajax.tags import redirect_to
 
 from london.apps.sites.models import Site
 
@@ -24,19 +25,20 @@ def user_is_writer(func):
         return func(*args, **kwargs)
     return _inner
 
-def list(request, template='post_list', site=None):
+def list(request, template='post_list', site=None, queryset_function=None):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
 
     if not site:
         site = request.site
 
-    posts = site['posts']
-    if not request.user.is_authenticated():
-        posts = posts.filter(is_draft=False)
+    if callable(queryset_function):
+        posts = queryset_function(request)
+    else:
+        posts = site['posts']
 
-    return render_to_response(request, template, 
-            {'posts': posts})
+    print 'x'*10, (site['hostname'], posts.count(), request.user.is_authenticated(), [p for p in posts]) # XXX
+    return render_to_response(request, template, {'posts':posts})
 
 def view(request, slug, template="post_view"):
     post = get_object_or_404(request.site['posts'], slug=slug)
