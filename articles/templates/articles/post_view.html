@@ -1,4 +1,4 @@
-{% base "blog_base" %}
+{% base "articles_base" %}
 
 {% piece "content" %}
 <h1 class="name">{{ post.name }}</h1>
@@ -22,7 +22,7 @@
 </div>
 
 {% if user.is_authenticated() %}
-{% body_scripts "blog:jeditable" %}
+{% body_scripts "articles:jeditable" %}
 <script type="text/javascript">
   $(document).ready(function () {
     $('.name').editable('save-name/');

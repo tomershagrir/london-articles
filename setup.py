@@ -9,10 +9,10 @@ except ImportError:
 
 from setuptools import setup
 
-packages = ['blog']
+packages = ['articles']
 
 setup(
-    name='London blog',
+    name='London articles',
     version=0.1,
     #url='',
     author="Bruno Gola",

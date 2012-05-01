@@ -1,4 +1,4 @@
-{% base "blog_base" %}
+{% base "articles_base" %}
 
 {% piece "content" %}
 {% if user.is_authenticated() %}
@@ -9,8 +9,8 @@
 <ul>
   {% for post in posts %}
   <li>
-    <h1><a href='/blog/{{ post.slug }}/'>{{ post.name }}</a></h1>
-    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} | {{ post.get_categories() }}{% if post.is_draft %},<strong>draft</strong>{% endif %}</span> 
+    <h1><a href='/articles/{{ post.slug }}/'>{{ post.name }}</a></h1>
+    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} | {{ post.get_categories() }}{% if post.is_draft %},<strong>draft</strong>{% endif %}</span>
     <p>{{ post.text }}</p>
   </li>
   {% endfor %}

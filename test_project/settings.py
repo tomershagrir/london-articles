@@ -59,7 +59,7 @@ INSTALLED_APPS = (
         'london.apps.themes',
         'london.apps.redirects',
         'london.apps.notifications',
-        'blog',
+        'articles',
         )
 
 STATIC_URL = '/static/'

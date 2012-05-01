@@ -18,11 +18,11 @@ class Category(models.Model):
 
 class Post(models.Model):
     class Meta:
-        ordering = ('date',) 
+        ordering = ('date',)
         permissions = tuple(
-                ('can_post_to_%s' % site_name[0], 
+                ('can_post_to_%s' % site_name[0],
                  'User can post to site %s' % site_name[1])
-                for site_name in SITES 
+                for site_name in SITES
             )
 
     name = models.CharField(max_length=255)
@@ -34,7 +34,7 @@ class Post(models.Model):
     source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
-    
+
     def get_categories(self):
         return ",".join(pc['category']['name'] for pc in self['categories'])
 
@@ -45,7 +45,7 @@ class Post(models.Model):
         return self['name']
 
     def save(self, **kwargs):
-        # TODO: slug field should be unique with site/blog
+        # TODO: slug field should be unique with site/articles
         # default values for slug and date
         if not self.get('slug', False):
             self['slug'] = slugify(self['name'])

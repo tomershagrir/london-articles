@@ -1,6 +1,6 @@
 from london import forms
-from blog.models import Post
-from blog import signals
+from articles.models import Post
+from articles import signals
 from images import ImagesWidget, add_image_field_to_sender_form
 
 signals.post_form_initialize.connect(add_image_field_to_sender_form)

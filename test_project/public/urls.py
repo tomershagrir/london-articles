@@ -10,13 +10,13 @@ admin.site.root_url = '/admin/'
 admin.site.load_from_applications()
 admin.site.ajax_site = ajax.site
 
-import blog
+import articles
 
 if settings.LOCAL:
     url_patterns = patterns('', url_serve(settings.STATIC_URL[1:], settings.STATIC_ROOT))
 
 url_patterns += patterns('public.views',
-        (r'^blog/', include(blog.urls)),
+        (r'^articles/', include(articles.urls)),
         (r'^ajax/', include(ajax.site.urls)),
         (r'^admin/', include(admin.site.urls)),
 )
