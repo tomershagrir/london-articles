@@ -9,7 +9,7 @@ class ModulePost(admin.CrudModule):
     readonly_fields = ('date', 'text')
     form = PostForm
 
-class AppBlog(admin.AdminApplication):
-    title = 'Blog'
+class AppArticle(admin.AdminApplication):
+    title = 'Article'
     modules = (ModulePost,)
 
