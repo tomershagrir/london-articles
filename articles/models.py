@@ -28,10 +28,10 @@ class Post(models.Model):
     name = models.CharField(max_length=255)
     author = models.ForeignKey('auth.User', blank=False, null=False)
     slug = models.SlugField(max_length=255, blank=True)
+    source = models.TextField()
     text = models.TextField()
     teaser = models.TextField()
     is_draft = models.BooleanField(default=True, blank=False, null=False)
-    source = models.TextField()
     date = models.DateTimeField(blank=False, null=False)
     site = models.ForeignKey(Site, related_name='posts')
 
