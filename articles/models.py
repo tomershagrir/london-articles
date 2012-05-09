@@ -53,12 +53,10 @@ class Post(models.Model):
         if self.get('date', None) is None:
             self['date'] = datetime.now()
 
-        if self.get('is_draft', None) is None:
-            self['is_draft'] = True
-
         source = self.get('source',  None)
         if source is not None:
             self['text'] = markdown2.markdown(source)
+
         return super(Post, self).save(**kwargs)
 
     def get_content(self):
