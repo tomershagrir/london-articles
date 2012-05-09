@@ -10,7 +10,6 @@ class PostForm(BaseModuleForm):
 
     class Meta:
         model = Post
-        readonly = ('date',)
         exclude = ('text',)
 
     def initialize(self):
