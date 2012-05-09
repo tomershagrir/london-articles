@@ -49,9 +49,6 @@ class Post(models.Model):
         if not self.get('slug', False):
             self['slug'] = slugify(self['name'])
 
-        if self.get('date', None) is None:
-            self['date'] = datetime.now()
-
         source = self.get('source',  None)
         if source is not None:
             self['text'] = markdown2.markdown(source)
