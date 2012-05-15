@@ -6,3 +6,5 @@
 .pydevproject
 .settings
 .idea
+build/
+dist/

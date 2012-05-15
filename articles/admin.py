@@ -5,11 +5,12 @@ from forms import PostForm
 
 class ModulePost(admin.CrudModule):
     model = Post
-    list_display = ('slug', 'name','date', 'text')
+    list_display = ('slug','name','date',)
     readonly_fields = ('date', 'text')
+    exclude = ('text',)
     form = PostForm
 
-class AppBlog(admin.AdminApplication):
-    title = 'Blog'
+class AppArticles(admin.AdminApplication):
+    title = 'Articles'
     modules = (ModulePost,)
 

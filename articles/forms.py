@@ -1,12 +1,13 @@
 from london import forms
+from london.apps.admin.modules import BaseModuleForm
 from articles.models import Post
 from articles import signals
 
-class PostForm(forms.ModelForm):
+class PostForm(BaseModuleForm):
 
     class Meta:
         model = Post
-        readonly = ('date', 'text')
+        exclude = ('text',)
 
     def get_initial(self, initial=None):
         initial = initial or super(PostForm, self).get_initial(initial)
