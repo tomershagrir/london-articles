@@ -1,9 +1,6 @@
 from london import forms
 from articles.models import Post
 from articles import signals
-from images import ImagesWidget, add_image_field_to_sender_form
-
-signals.post_form_initialize.connect(add_image_field_to_sender_form)
 
 class PostForm(forms.ModelForm):
 
@@ -11,5 +8,13 @@ class PostForm(forms.ModelForm):
         model = Post
         readonly = ('date', 'text')
 
-    def initialize(self):
-        signals.post_form_initialize.send(sender=self)
+    def get_initial(self, initial=None):
+        initial = initial or super(PostForm, self).get_initial(initial)
+        signals.post_form_initialize.send(sender=self, initial=initial)
+        return initial
+    
+    def save(self, commit=True, force_new=False):
+        signals.post_form_pre_save.send(sender=self, instance=self.instance)
+        obj = super(PostForm, self).save(commit, force_new)
+        signals.post_form_post_save.send(sender=self, instance=obj)
+        return obj
