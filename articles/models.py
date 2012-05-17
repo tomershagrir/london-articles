@@ -7,6 +7,12 @@ from london.urls import reverse
 
 from datetime import datetime
 
+try:
+    from images.render import ImagesRender
+    image_compiler = ImagesRender()
+except:
+    image_compiler = None
+
 import markdown2
 
 SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
@@ -50,6 +56,7 @@ class Post(models.Model):
             self['slug'] = slugify(self['name'])
 
         source = self.get('source',  None)
+        source = image_compiler.render(source) or source
         if source is not None:
             self['text'] = markdown2.markdown(source)
 
