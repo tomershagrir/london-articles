@@ -7,7 +7,7 @@ class ModulePost(admin.CrudModule):
     model = Post
     list_display = ('slug','name','date',)
     readonly_fields = ('date', 'text')
-    exclude = ('text','site')
+    exclude = ('text')
     form = PostForm
 
 class AppArticles(admin.AdminApplication):
