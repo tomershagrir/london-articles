@@ -7,7 +7,7 @@ class PostForm(BaseModuleForm):
 
     class Meta:
         model = Post
-        exclude = ('text',)
+        exclude = ('text','site')
 
     def get_initial(self, initial=None):
         initial = initial or super(PostForm, self).get_initial(initial)
