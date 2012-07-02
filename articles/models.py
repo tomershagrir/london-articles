@@ -64,6 +64,9 @@ class Post(models.Model):
 
     def get_content(self):
         return mark_safe(self['text'])
+    
+    def get_teaser(self):
+        return mark_safe(self['teaser'])
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, related_name="categories")
