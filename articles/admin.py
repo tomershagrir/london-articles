@@ -9,6 +9,7 @@ class ModulePost(admin.CrudModule):
     readonly_fields = ('date', 'text')
     exclude = ('text')
     form = PostForm
+    search_fields = ('name',)
 
 class AppArticles(admin.AdminApplication):
     title = 'Articles'
