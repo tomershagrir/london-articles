@@ -14,6 +14,8 @@ from london.apps.auth.authentication import get_request
 
 from models import Post, Category
 
+from office.decorators import self_and_request_for
+
 def is_writer(user):
     return user.is_authenticated() and (user['is_superuser'] or user['groups'].filter(name="writers"))
 
@@ -25,6 +27,21 @@ def user_is_writer(func):
         return func(*args, **kwargs)
     return _inner
 
+def user_is_writer_or_operator(func):
+    def _inner(*args, **kwargs):
+        self, request, args, kwargs = self_and_request_for(*args, **kwargs)
+
+        if not is_writer(request.user):
+            if not getattr(request, 'office_operator', None) or not getattr(request, 'office', None):
+                path = request.get_full_path()
+                return redirect_to(request, '/login/?next='+path)
+
+        if self:
+            return func(self, request, *args, **kwargs)
+        return func(request, *args, **kwargs)
+    return _inner
+
+@user_is_writer_or_operator
 def list(request, template='post_list', site=None, queryset_function=None):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
