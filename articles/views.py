@@ -14,7 +14,10 @@ from london.apps.auth.authentication import get_request
 
 from models import Post, Category
 
-from office.decorators import self_and_request_for
+try:
+    from office.decorators import self_and_request_for
+except ImportError:
+    self_and_request_for = None
 
 def is_writer(user):
     return user.is_authenticated() and (user['is_superuser'] or user['groups'].filter(name="writers"))
