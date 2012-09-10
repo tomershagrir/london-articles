@@ -15,7 +15,7 @@ except:
 
 import markdown2
 
-SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
+#SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
 
 class Category(models.Model):
     class Meta:
@@ -25,11 +25,11 @@ class Category(models.Model):
 class Post(models.Model):
     class Meta:
         ordering = ('-date', )
-        permissions = tuple(
-                ('can_post_to_%s' % site_name[0],
-                 'User can post to site %s' % site_name[1])
-                for site_name in SITES
-            )
+#        permissions = tuple(
+#                ('can_post_to_%s' % site_name[0],
+#                 'User can post to site %s' % site_name[1])
+#                for site_name in SITES
+#            )
 
     name = models.CharField(max_length=255)
     author = models.ForeignKey('auth.User', blank=False, null=False)
