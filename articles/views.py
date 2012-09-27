@@ -57,7 +57,6 @@ def list(request, template='post_list', site=None, queryset_function=None):
     else:
         posts = site['posts']
 
-    print 'x'*10, (site['hostname'], posts.count(), request.user.is_authenticated(), [p for p in posts]) # XXX
     return render_to_response(request, template, {'posts':posts})
 
 def view(request, slug, template="post_view"):
