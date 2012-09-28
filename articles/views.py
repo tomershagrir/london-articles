@@ -59,8 +59,19 @@ def list(request, template='post_list', site=None, queryset_function=None):
 
     return render_to_response(request, template, {'posts':posts})
 
-def view(request, slug, template="post_view"):
-    post = get_object_or_404(request.site['posts'], slug=slug)
+def view(request, slug, template="post_view", site=None, queryset_function=None):
+    if isinstance(site, basestring):
+        site = Site.query().get(name=site)
+
+    if not site:
+        site = request.site
+
+    if callable(queryset_function):
+        posts = queryset_function(request)
+    else:
+        posts = site['posts']
+
+    post = get_object_or_404(posts, slug=slug)
     return render_to_response(request, template, {'post': post, 
                             'categories': post.get_categories()})
 
