@@ -68,6 +68,26 @@ class Post(models.Model):
     def get_teaser(self):
         return mark_safe(self['teaser'])
 
+    def get_previous_post(self):
+        if not hasattr(self, '_previous_post'):
+            posts = Post.query().filter(site=self['site'], is_draft=False, date__lt=self['date']).order_by('date')
+            try:
+                self._previous_post = posts[0]
+            except IndexError:
+                self._previous_post = None
+
+        return self._previous_post
+
+    def get_next_post(self):
+        if not hasattr(self, '_next_post'):
+            posts = Post.query().filter(site=self['site'], is_draft=False, date__gt=self['date']).order_by('-date')
+            try:
+                self._next_post = posts[0]
+            except IndexError:
+                self._next_post = None
+
+        return self._next_post
+
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, related_name="categories")
     category = models.ForeignKey(Category, related_name="posts")
