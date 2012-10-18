@@ -12,7 +12,7 @@ from london.apps.sites.models import Site
 
 from london.apps.auth.authentication import get_request
 
-from models import Post, Category
+from models import Post
 
 
 def is_writer(user):
@@ -53,8 +53,7 @@ def view(request, slug, template="post_view", site=None, queryset_function=None)
         posts = site['posts']
 
     post = get_object_or_404(posts, slug=slug)
-    return render_to_response(request, template, {'post': post, 
-                            'categories': post.get_categories()})
+    return render_to_response(request, template, {'post': post})
 
 @user_is_writer
 def save_name(request, slug):
@@ -104,14 +103,3 @@ def publish(request, slug):
             post['is_draft'] = True
         post.save()
     return HttpResponseRedirect(reverse("post_view", kwargs={'slug': post['slug']}))
-
-@user_is_writer
-def save_categories(request, slug):
-    if request.method == 'POST':
-        post = get_object_or_404(request.site['posts'], slug=slug)
-        categories = request.POST['value']
-        post['categories'].delete()
-        for category in categories.split(","):
-            category,created = Category.query().get_or_create(name=category.strip().lower())
-            post['categories'].get_or_create(category=category)
-    return HttpResponse(post.get_categories())

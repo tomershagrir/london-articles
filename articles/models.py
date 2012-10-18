@@ -17,19 +17,10 @@ import markdown2
 
 #SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
 
-class Category(models.Model):
-    class Meta:
-        ordering = ('name', )
-    name = models.CharField(max_length=50)
-
 class Post(models.Model):
     class Meta:
         ordering = ('-date', )
-#        permissions = tuple(
-#                ('can_post_to_%s' % site_name[0],
-#                 'User can post to site %s' % site_name[1])
-#                for site_name in SITES
-#            )
+        unique_together = (('slug','site'),)
 
     name = models.CharField(max_length=255)
     author = models.ForeignKey('auth.User', blank=False, null=False)
@@ -38,11 +29,8 @@ class Post(models.Model):
     text = models.TextField()
     teaser = models.TextField()
     is_draft = models.BooleanField(blank=True, null=False, default=True)
-    date = models.DateTimeField(blank=True, null=False, default=datetime.now)    
+    date = models.DateTimeField(blank=True, default=datetime.now)    
     site = models.ForeignKey(Site, related_name='posts')
-
-    def get_categories(self):
-        return ",".join(pc['category']['name'] for pc in self['categories'])
 
     def get_url(self):
         return reverse("post_view", kwargs={'slug': self['slug']})
@@ -51,7 +39,6 @@ class Post(models.Model):
         return self['name']
 
     def save(self, **kwargs):
-        # TODO: slug field should be unique with site/articles
         if not self.get('slug', False):
             self['slug'] = slugify(self['name'])
 
@@ -87,7 +74,3 @@ class Post(models.Model):
                 self._next_post = None
 
         return self._next_post
-
-class PostCategory(models.Model):
-    post = models.ForeignKey(Post, related_name="categories")
-    category = models.ForeignKey(Category, related_name="posts")

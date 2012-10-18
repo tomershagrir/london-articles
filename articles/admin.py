@@ -6,8 +6,8 @@ from forms import PostForm
 class ModulePost(admin.CrudModule):
     model = Post
     list_display = ('slug','name','date',)
-    readonly_fields = ('date', 'text')
-    exclude = ('text')
+    readonly_fields = ('date','text')
+    exclude = ('text',)
     form = PostForm
     search_fields = ('name',)
 

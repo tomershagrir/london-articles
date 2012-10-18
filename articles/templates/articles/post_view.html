@@ -14,19 +14,12 @@
     Click to edit
   {% endif %}
 </div>
-<div>
-  <span><strong>Categories:</strong></span>
-</div>
-<div style="font-size:12px" class="categories">{% if categories %}{{ categories }}{% else %}click to edit{% endif %}
-</span>
-</div>
 
 {% if user.is_authenticated() %}
 {% body_scripts "articles:jeditable" %}
 <script type="text/javascript">
   $(document).ready(function () {
     $('.name').editable('save-name/');
-    $('.categories').editable('save-categories/');
     $('.text').editable('save-text/', {
       loadurl: 'markdown/',
       type: 'textarea',
