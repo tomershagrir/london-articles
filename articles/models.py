@@ -53,7 +53,7 @@ class Post(models.Model):
         return mark_safe(self['text'])
     
     def get_teaser(self):
-        return mark_safe(self['teaser'])
+        return mark_safe(self['teaser'] or '')
 
     def get_previous_post(self):
         if not hasattr(self, '_previous_post'):
