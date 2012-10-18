@@ -17,7 +17,8 @@ class PostForm(BaseModuleForm):
         return initial
     
     def save(self, commit=True, force_new=False):
-        self.cleaned_data['date'] = datetime.now()
+        if bool(self.request.POST.get('save_as_new', 0)):
+            self.cleaned_data['date'] = datetime.now()
         signals.post_form_pre_save.send(sender=self, instance=self.instance)
         obj = super(PostForm, self).save(commit, force_new)
         signals.post_form_post_save.send(sender=self, instance=obj)
