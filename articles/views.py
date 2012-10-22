@@ -20,7 +20,7 @@ except ImportError:
     self_and_request_for = None
 
 def is_writer(user):
-    return user.is_authenticated() and (user['is_superuser'] or user['groups'].filter(name="writers"))
+    return user.is_authenticated() and (user['is_superuser'] or (user['groups'] and user['groups'].filter(name="writers")))
 
 def user_is_writer(func):
     def _inner(*args, **kwargs):
