@@ -2,7 +2,7 @@ from london import forms
 from london.apps.admin.modules import BaseModuleForm
 from articles.models import Post
 from articles import signals
-from articles.utils import html2text
+from articles.utils import html2text, HTMLParseError
 
 from datetime import datetime
 

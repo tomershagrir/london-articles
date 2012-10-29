@@ -1,1 +1,2 @@
-from html2text import html2text 
+from html2text import html2text
+from HTMLParser import HTMLParseError
