@@ -16,8 +16,8 @@ class PostForm(BaseModuleForm):
         initial = initial or super(PostForm, self).get_initial(initial)
         if not initial['source']:
             try:
-                initial['source'] = html2text(self.instance['text'])
-#                initial['source'] = self.instance['text']
+#                initial['source'] = html2text(self.instance['text'])
+                initial['source'] = self.instance['text']
             except:
                 pass
         signals.post_form_initialize.send(sender=self, initial=initial, publish_field_name='is_draft', inversed=True)
