@@ -31,6 +31,10 @@ class Post(models.Model):
     is_draft = models.BooleanField(blank=True, null=False, default=True)
     date = models.DateTimeField(blank=True, default=datetime.now)    
     site = models.ForeignKey(Site, related_name='posts')
+    
+    def publish(self):
+        self['is_draft'] = False
+        self.save()
 
     def get_url(self):
         return reverse("post_view", kwargs={'slug': self['slug']})

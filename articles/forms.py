@@ -2,6 +2,7 @@ from london import forms
 from london.apps.admin.modules import BaseModuleForm
 from articles.models import Post
 from articles import signals
+from articles.utils import html2text
 
 from datetime import datetime
 
@@ -13,7 +14,13 @@ class PostForm(BaseModuleForm):
 
     def get_initial(self, initial=None):
         initial = initial or super(PostForm, self).get_initial(initial)
-        signals.post_form_initialize.send(sender=self, initial=initial)
+        if not initial['source']:
+            try:
+                initial['source'] = html2text(self.instance['text'])
+#                initial['source'] = self.instance['text']
+            except:
+                pass
+        signals.post_form_initialize.send(sender=self, initial=initial, publish_field_name='is_draft', inversed=True)
         return initial
     
     def save(self, commit=True, force_new=False):
