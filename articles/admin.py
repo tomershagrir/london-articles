@@ -12,6 +12,6 @@ class ModulePost(admin.CrudModule):
     search_fields = ('name',)
 
 class AppArticles(admin.AdminApplication):
-    title = 'Articles'
+    title = 'Blog'
     modules = (ModulePost,)
 

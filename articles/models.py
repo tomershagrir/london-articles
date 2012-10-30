@@ -21,6 +21,8 @@ class Post(models.Model):
     class Meta:
         ordering = ('-date', )
         unique_together = (('slug','site'),)
+        verbose_name_plural = 'Articles'
+        verbose_name = 'Article'
 
     name = models.CharField(max_length=255)
     author = models.ForeignKey('auth.User', blank=False, null=False)
