@@ -25,8 +25,8 @@ class Post(models.Model):
         verbose_name = 'Article'
 
     name = models.CharField(max_length=255)
-    author = models.ForeignKey('auth.User', blank=False, null=False)
-    slug = models.SlugField(max_length=255, blank=True)
+    author = models.ForeignKey('auth.User', blank=False, null=False, related_name='posts')
+    slug = models.SlugField(max_length=255, blank=True, allow_slashes=True)
     source = models.TextField()
     text = models.TextField()
     teaser = models.TextField()
