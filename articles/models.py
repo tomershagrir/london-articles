@@ -1,6 +1,7 @@
 from london.db import models
 from london.utils.slugs import slugify
 from london.apps.sites.models import Site
+from london.apps.collections.models import Collection
 from london.apps.auth.models import User
 from london.utils.safestring import mark_safe
 from london.urls import reverse
@@ -15,10 +16,14 @@ except:
 
 import markdown2
 
-#SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
+
+class PostQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(is_draft=False)
 
 class Post(models.Model):
     class Meta:
+        query = 'articles.models.PostQuerySet'
         ordering = ('-date', )
         unique_together = (('slug','site'),)
         verbose_name_plural = 'Articles'
@@ -39,7 +44,16 @@ class Post(models.Model):
         self.save()
 
     def get_url(self):
-        return reverse("post_view", kwargs={'slug': self['slug']})
+        kwargs={'slug': self['slug']}
+        collections = Collection.query().filter(site=self['site'], items__contains=str(self['pk']))
+        if collections.count():
+            kwargs['collection'] = collections[0].get_slug() # TODO: what to do if article belong to more than 1 collection?
+        else:
+            kwargs['collection'] = 'cant-find' # TODO: shouldn't be empty, but need find better way to fill it
+        try: 
+            return reverse("articles_views_view", kwargs=kwargs)
+        except:
+            return self['slug']
 
     def __unicode__(self):
         return self['name']

@@ -3,14 +3,18 @@
 import os
 from london.shortcuts import get_object_or_404
 from london.templates import render_template, render_to_response
-from london.http import HttpResponse, HttpResponseRedirect
+from london.http import HttpResponse, HttpResponseRedirect, Http404
 from london.urls import reverse
 from london.utils.slugs import slugify
 from london.apps.ajax.tags import redirect_to
-
 from london.apps.sites.models import Site
-
 from london.apps.auth.authentication import get_request
+
+try:
+    from routes import register_for_routes
+except ImportError:
+    def register_for_routes(view):
+        pass
 
 from models import Post
 
@@ -26,6 +30,7 @@ def user_is_writer(func):
         return func(*args, **kwargs)
     return _inner
 
+@register_for_routes('articles.views.list')
 def list(request, template='post_list', site=None, queryset_function=None):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
@@ -40,7 +45,8 @@ def list(request, template='post_list', site=None, queryset_function=None):
 
     return render_to_response(request, template, {'posts':posts})
 
-def view(request, slug, template="post_view", site=None, queryset_function=None):
+@register_for_routes('articles.views.view')
+def view(request, slug, template="post_view", site=None, queryset_function=None, **kwargs):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
 
@@ -82,15 +88,15 @@ def create(request):
                     author=request.user, site=request.site)
         post.save()
         return HttpResponseRedirect(
-                reverse("post_view", kwargs={'slug': post['slug']}))
-    return HttpResponseRedirect(reverse("post_list"))
+                reverse("articles_views_view", kwargs={'slug': post['slug']}))
+    return HttpResponseRedirect(reverse("articles_views_list"))
 
 @user_is_writer
 def delete(request, slug):
     if request.method == 'POST':
         post = get_object_or_404(request.site['posts'], slug=slug)
         post.delete()
-    return HttpResponseRedirect(reverse("post_list"))
+    return HttpResponseRedirect(reverse("articles_views_list"))
 
 @user_is_writer
 def publish(request, slug):
@@ -102,4 +108,4 @@ def publish(request, slug):
         elif action == 'unpublish':
             post['is_draft'] = True
         post.save()
-    return HttpResponseRedirect(reverse("post_view", kwargs={'slug': post['slug']}))
+    return HttpResponseRedirect(reverse("articles_views_view", kwargs={'slug': post['slug']}))
