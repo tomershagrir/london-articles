@@ -44,12 +44,11 @@ class Post(models.Model):
         self.save()
 
     def get_url(self):
-        kwargs={'slug': self['slug']}
+        kwargs = {}
         collections = Collection.query().filter(site=self['site'], items__contains=str(self['pk']))
         if collections.count():
-            kwargs['collection'] = collections[0].get_slug() # TODO: what to do if article belong to more than 1 collection?
-        else:
-            kwargs['collection'] = 'cant-find' # TODO: shouldn't be empty, but need find better way to fill it
+            kwargs = collections[0].get_slugs() # TODO: what to do if article belong to more than 1 collection?
+        kwargs['slug'] = self['slug']
         try: 
             return reverse("articles_views_view", kwargs=kwargs)
         except:
