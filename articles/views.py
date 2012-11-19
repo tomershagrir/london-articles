@@ -32,7 +32,7 @@ def user_is_writer(func):
     return _inner
 
 @register_for_routes('articles.views.list')
-def list(request, template='post_list', site=None, queryset_function=None):
+def list(request, template='post_list', site=None, queryset_function=None, **kwargs):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
 
@@ -43,6 +43,16 @@ def list(request, template='post_list', site=None, queryset_function=None):
         posts = queryset_function(request)
     else:
         posts = site['posts']
+    
+    collections = Collection.query()
+    if 'slug2' in kwargs:
+        items = []
+        for item in Collection.query().filter(site=site, slug=kwargs['slug2']):
+            items.extend(item['items'])
+        collections = collections.filter(pk__in=items)
+    if 'slug1' in kwargs:
+        collection = get_object_or_404(collections, slug=kwargs['slug1'])
+        posts = posts.filter(pk__in=collection['items'])
 
     return render_to_response(request, template, {'posts':posts})
 
