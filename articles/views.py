@@ -43,18 +43,23 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
         posts = queryset_function(request)
     else:
         posts = site['posts']
-    
+        
+    breadcrumbs = []
     collections = Collection.query()
     if 'slug2' in kwargs:
         items = []
         for item in Collection.query().filter(site=site, slug=kwargs['slug2']):
             items.extend(item['items'])
         collections = collections.filter(pk__in=items)
+        breadcrumbs.append((collections[0]['name'], collections[0].get_url()))
     if 'slug1' in kwargs:
         collection = get_object_or_404(collections, slug=kwargs['slug1'])
+        breadcrumbs.append((collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
-
-    return render_to_response(request, template, {'posts':posts})
+    if request.breadcrumbs:
+        breadcrumbs.reverse()
+        request.breadcrumbs(breadcrumbs)
+    return render_to_response(request, template, {'posts':posts, 'category':collection or None})
 
 @register_for_routes('articles.views.view')
 def view(request, slug, template="post_view", site=None, queryset_function=None, **kwargs):
