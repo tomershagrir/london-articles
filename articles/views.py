@@ -48,16 +48,20 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
     collections = Collection.query()
     if 'slug2' in kwargs:
         items = []
-        for item in Collection.query().filter(site=site, slug=kwargs['slug2']):
+        excluding_pks = []
+        for pk_items in collections.values_list('items', flat=True):
+            excluding_pks.extend(pk_items)
+        for item in Collection.query().filter(site=site, slug=kwargs['slug2'], pk__notin=excluding_pks):
+            collection = item
             items.extend(item['items'])
         collections = collections.filter(pk__in=items)
-        breadcrumbs.append((collections[0]['name'], collections[0].get_url()))
+        breadcrumbs.append((collection['title'], collection.get_url()))
     if 'slug1' in kwargs:
         collection = get_object_or_404(collections, slug=kwargs['slug1'])
-        breadcrumbs.append((collection['name'], collection.get_url()))
+        breadcrumbs.append((collection['title'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     if request.breadcrumbs:
-        breadcrumbs.reverse()
+#        breadcrumbs.reverse()
         request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'posts':posts, 'category':collection or None})
 
