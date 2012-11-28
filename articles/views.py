@@ -57,7 +57,7 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
         collections = collections.filter(pk__in=items)
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
     if 'slug1' in kwargs:
-        collection = get_object_or_404(collections, slug=kwargs['slug1'])
+        collection = get_object_or_404(collections, slug=kwargs['slug1'].lower())
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     if request.breadcrumbs:
@@ -90,7 +90,7 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         collections = collections.filter(pk__in=items)
     if 'slug1' in kwargs:
-        collection = get_object_or_404(collections, slug=kwargs['slug1'])
+        collection = get_object_or_404(collections, slug=kwargs['slug1'].lower())
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     post = get_object_or_404(posts, slug=slug)
