@@ -55,13 +55,12 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
             collection = item
             items.extend(item['items'])
         collections = collections.filter(pk__in=items)
-        breadcrumbs.append((collection['title'], collection.get_url()))
+        breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
     if 'slug1' in kwargs:
         collection = get_object_or_404(collections, slug=kwargs['slug1'])
-        breadcrumbs.append((collection['title'], collection.get_url()))
+        breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     if request.breadcrumbs:
-#        breadcrumbs.reverse()
         request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'posts':posts, 'category':collection or None})
 
@@ -79,15 +78,24 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
         posts = site['posts']
 
     collections = Collection.query()
+    breadcrumbs = []
     if 'slug2' in kwargs:
         items = []
-        for item in Collection.query().filter(site=site, slug=kwargs['slug2']):
+        excluding_pks = []
+        for pk_items in collections.values_list('items', flat=True):
+            excluding_pks.extend(pk_items)
+        for item in Collection.query().filter(site=site, slug=kwargs['slug2'], pk__notin=excluding_pks):
+            collection = item
             items.extend(item['items'])
+        breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         collections = collections.filter(pk__in=items)
     if 'slug1' in kwargs:
         collection = get_object_or_404(collections, slug=kwargs['slug1'])
+        breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     post = get_object_or_404(posts, slug=slug)
+    breadcrumbs.append((post['name'], post.get_url()))
+    request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'post': post})
 
 @user_is_writer
