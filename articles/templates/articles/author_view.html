@@ -1,0 +1,14 @@
+{% base "articles_base" %}
+
+{% piece "content" %}
+<ul>
+  {% for post in author.posts %}
+  <li>
+    <h1><a href='/articles/{{ post.slug }}/'>{{ post.name }}</a></h1>
+    <span>{{ post.author }} @ {{ post.date.strftime("%m/%d/%Y %H:%M") }} | {% if post.is_draft %},<strong>draft</strong>{% endif %}</span>
+    <p>{{ post.text }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% endpiece %}
+

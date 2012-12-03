@@ -4,6 +4,7 @@ import os
 from london.shortcuts import get_object_or_404
 from london.templates import render_template, render_to_response
 from london.http import HttpResponse, HttpResponseRedirect, Http404
+from london.exceptions import MultipleObjectsReturned
 from london.urls import reverse
 from london.utils.slugs import slugify
 from london.apps.ajax.tags import redirect_to
@@ -16,6 +17,11 @@ try:
 except ImportError:
     def register_for_routes(view):
         pass
+    
+try:
+    from userprofiles.models import UserProfile
+except ImportError:
+    pass
 
 from models import Post
 
@@ -97,6 +103,20 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
     breadcrumbs.append((post['name'], post.get_url()))
     request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'post': post})
+
+@register_for_routes('articles.views.author_view')
+def author_view(request, slug):
+    if not UserProfile:
+        return Http404
+    parts = map(lambda x: x.capitalize(), slug.split('-'))
+    firstname = parts[0]
+    lastname = parts[1] if len(parts) > 1 else ''
+    try:
+        author = get_object_or_404(UserProfile, firstname=firstname, lastname=lastname)
+    except MultipleObjectsReturned:
+        author = UserProfile.query().filter(firstname=firstname, lastname=lastname)[0]
+    
+    return render_to_response(request, 'author_view', {'author': author['user']})
 
 @user_is_writer
 def save_name(request, slug):
