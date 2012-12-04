@@ -112,7 +112,7 @@ def author_view(request, slug):
     firstname = parts[0]
     lastname = parts[1] if len(parts) > 1 else ''
     try:
-        author = get_object_or_404(UserProfile, firstname=firstname, lastname=lastname)
+        author = get_object_or_404(UserProfile, firstname__icontains=firstname, lastname__icontains=lastname)
     except MultipleObjectsReturned:
         author = UserProfile.query().filter(firstname=firstname, lastname=lastname)[0]
     
