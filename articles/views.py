@@ -51,7 +51,7 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
         posts = site['posts']
         
     breadcrumbs = []
-    collections = Collection.query()
+    collections = Collection.query().filter(site=site)
     if 'slug2' in kwargs:
         items = []
         excluding_pks = []
@@ -68,7 +68,7 @@ def list(request, template='post_list', site=None, queryset_function=None, **kwa
         posts = posts.filter(pk__in=collection['items'])
     if request.breadcrumbs:
         request.breadcrumbs(breadcrumbs)
-    return render_to_response(request, template, {'posts':posts, 'category':collection or None})
+    return render_to_response(request, template, {'posts':posts.published(), 'category':collection or None})
 
 @register_for_routes('articles.views.view')
 def view(request, slug, template="post_view", site=None, queryset_function=None, **kwargs):
@@ -83,7 +83,7 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
     else:
         posts = site['posts']
 
-    collections = Collection.query()
+    collections = Collection.query().filter(site=site)
     breadcrumbs = []
     if 'slug2' in kwargs:
         items = []
@@ -99,7 +99,7 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
         collection = get_object_or_404(collections, slug=kwargs['slug1'].lower())
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
-    post = get_object_or_404(posts, slug=slug)
+    post = get_object_or_404(posts.published(), slug=slug)
     breadcrumbs.append((post['name'], post.get_url()))
     request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'post': post})
@@ -116,7 +116,7 @@ def author_view(request, slug):
     except MultipleObjectsReturned:
         author = UserProfile.query().filter(firstname=firstname, lastname=lastname)[0]
     
-    return render_to_response(request, 'author_view', {'author': author['user']})
+    return render_to_response(request, 'author_view', {'author': author['user'], 'author_posts': author['user']['posts'].published()})
 
 @user_is_writer
 def save_name(request, slug):
