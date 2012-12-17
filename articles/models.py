@@ -52,7 +52,7 @@ class Post(models.Model):
         try: 
             return reverse("articles_views_view", kwargs=kwargs)
         except:
-            return self['slug']
+            return '/'+self['slug']
 
     def __unicode__(self):
         return self['name']
