@@ -115,7 +115,10 @@ def author_view(request, slug):
         author = get_object_or_404(UserProfile, firstname__icontains=firstname, lastname__icontains=lastname)
     except MultipleObjectsReturned:
         author = UserProfile.query().filter(firstname=firstname, lastname=lastname)[0]
-    
+        
+    breadcrumbs = [('Author', '/authors'), (author['user'].get_full_name(), '/authors/%s' % author.get_slug())]
+    request.breadcrumbs(breadcrumbs)
+
     return render_to_response(request, 'author_view', {'author': author['user'], 'author_posts': author['user']['posts'].published()})
 
 @user_is_writer
