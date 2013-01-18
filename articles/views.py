@@ -116,10 +116,24 @@ def author_view(request, slug):
     except MultipleObjectsReturned:
         author = UserProfile.query().filter(firstname=firstname, lastname=lastname)[0]
         
-    breadcrumbs = [('Author', '/authors'), (author['user'].get_full_name(), '/authors/%s' % author.get_slug())]
+    breadcrumbs = [('Authors', '/authors'), (author['user'].get_full_name(), '/authors/%s' % author.get_slug())]
     request.breadcrumbs(breadcrumbs)
 
     return render_to_response(request, 'author_view', {'author': author['user'], 'author_posts': author['user']['posts'].published()})
+
+@register_for_routes('articles.views.author_list')
+def author_list(request):
+    # FIXME: it better to use group by or distinct here 
+    posts = request.site['posts'].published()
+    authors = []
+    for post in posts:
+        if post['author'] not in authors:
+            authors.append(post['author'])
+        
+    breadcrumbs = [('Authors', '/authors')]
+    request.breadcrumbs(breadcrumbs)
+
+    return render_to_response(request, 'author_list', {'authors': authors})
 
 @user_is_writer
 def save_name(request, slug):

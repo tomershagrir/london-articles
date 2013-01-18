@@ -1,0 +1,12 @@
+{% base "articles_base" %}
+
+{% piece "content" %}
+<ul>
+  {% for author in authors %}
+  <li>
+    <h1><a href='/authors/{{ author.profile.get_slug() }}/'>{{ author.get_full_name() }}</a></h1>
+  </li>
+  {% endfor %}
+</ul>
+{% endpiece %}
+
