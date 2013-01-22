@@ -3,9 +3,11 @@
 {% piece "content" %}
 <ul>
   {% for author in authors %}
+  {% if author.profile %}
   <li>
     <h1><a href='/authors/{{ author.profile.get_slug() }}/'>{{ author.get_full_name() }}</a></h1>
   </li>
+  {% endif %}
   {% endfor %}
 </ul>
 {% endpiece %}
