@@ -83,11 +83,7 @@ class Post(models.Model):
 
     def get_content(self):
         regex = re.compile("\{(IMAGE|COLLECTION|ALL):(.*?)\}")
-        if not len(content) or not content[0]:
-            content = mark_safe(regex.sub('', self['text']))
-        else:
-            content = content[0] 
-        return content
+        return mark_safe(regex.sub('', self['text']))
     
     def get_teaser(self):
         return mark_safe(self['teaser'] or '')
