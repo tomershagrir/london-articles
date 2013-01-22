@@ -28,11 +28,19 @@ class Post(models.Model):
         unique_together = (('slug','site'),)
         verbose_name_plural = 'Articles'
         verbose_name = 'Article'
+        
+    RENDER_TYPE_RAW = 'raw'
+    RENDER_TYPE_MARKDOWN = 'markdown'
+    RENDER_TYPE_CHOICES = (
+            (RENDER_TYPE_RAW, 'Raw HTML'),
+            (RENDER_TYPE_MARKDOWN, 'Markdown'),
+            )
 
     name = models.CharField(max_length=255)
     author = models.ForeignKey('auth.User', blank=False, null=False, related_name='posts')
     slug = models.SlugField(max_length=255, blank=True, allow_slashes=True)
     source = models.TextField()
+    markup = models.CharField(max_length=20, blank=True, choices=RENDER_TYPE_CHOICES, default=RENDER_TYPE_RAW)
     text = models.TextField()
     teaser = models.TextField()
     is_draft = models.BooleanField(blank=True, null=False, default=True)
@@ -63,13 +71,21 @@ class Post(models.Model):
 
         source = self.get('source',  None)
         source = image_compiler.render(source) or source
-        if source is not None:
-            self['text'] = markdown2.markdown(source)
-
+        
+        if self['markup'] == self.RENDER_TYPE_MARKDOWN:
+            self['text'] = markdown2.markdown(source or '')
+        else:
+            self['text'] = source or ''
+        
         return super(Post, self).save(**kwargs)
 
     def get_content(self):
-        return mark_safe(self['text'])
+        regex = re.compile("\{(IMAGE|COLLECTION|ALL):(.*?)\}")
+        if not len(content) or not content[0]:
+            content = mark_safe(regex.sub('', self['text']))
+        else:
+            content = content[0] 
+        return content
     
     def get_teaser(self):
         return mark_safe(self['teaser'] or '')
