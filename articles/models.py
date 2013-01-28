@@ -15,7 +15,7 @@ try:
     image_compiler = ImagesRender()
 except:
     image_compiler = None
-
+    
 import markdown2
 
 
@@ -59,8 +59,14 @@ class Post(models.Model):
         if collections.count():
             kwargs = collections[0].get_slugs() # TODO: what to do if article belong to more than 1 collection?
         kwargs['slug'] = self['slug']
+        
+        try:
+            from routes import dynamic_url_patterns
+        except ImportError:
+            dynamic_url_patterns = []
+        
         try: 
-            return reverse("articles_views_view", kwargs=kwargs)
+            return reverse("articles_views_view", kwargs=kwargs, dynamic_url_patterns=dynamic_url_patterns)
         except:
             return '/'+self['slug']
 
