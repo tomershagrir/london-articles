@@ -13,6 +13,12 @@ from london.apps.auth.authentication import get_request
 from london.apps.collections.models import Collection
 
 try:
+    from images.render import ImagesRender
+    image_compiler = ImagesRender()
+except:
+    image_compiler = None
+
+try:
     from routes import register_for_routes
 except ImportError:
     def register_for_routes(view):
@@ -102,6 +108,8 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
         breadcrumbs.append((collection['title'] or collection['name'], collection.get_url()))
         posts = posts.filter(pk__in=collection['items'])
     post = get_object_or_404(posts.published(), slug=slug)
+    if image_compiler:
+        post['text'] = image_compiler.render(post['text'])
     breadcrumbs.append((post['name'], post.get_url()))
     request.breadcrumbs(breadcrumbs)
     return render_to_response(request, template, {'post': post})

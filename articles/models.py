@@ -9,13 +9,6 @@ from london.utils.safestring import mark_safe
 from london.urls import reverse
 
 from datetime import datetime
-
-try:
-    from images.render import ImagesRender
-    image_compiler = ImagesRender()
-except:
-    image_compiler = None
-    
 import markdown2
 
 
@@ -78,7 +71,6 @@ class Post(models.Model):
             self['slug'] = slugify(self['name'])
 
         source = self.get('source',  None)
-        source = image_compiler.render(source) or source
         
         if self['markup'] == self.RENDER_TYPE_MARKDOWN:
             self['text'] = markdown2.markdown(source or '')
