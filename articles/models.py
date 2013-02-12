@@ -15,7 +15,10 @@ except:
 
 import markdown2
 
-SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
+try:
+    SITES = [(slugify(site['name']), site['name']) for site in Site.query()]
+except:
+    SITES = []
 
 class Category(models.Model):
     class Meta:
