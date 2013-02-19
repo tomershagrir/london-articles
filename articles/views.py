@@ -112,7 +112,7 @@ def view(request, slug, template="post_view", site=None, queryset_function=None,
         post['text'] = image_compiler.render(post['text'])
     breadcrumbs.append((post['name'], post.get_url()))
     request.breadcrumbs(breadcrumbs)
-    return render_to_response(request, template, {'post': post})
+    return render_to_response(request, post['template_name'] or template, {'post': post})
 
 @register_for_routes('articles.views.author_view')
 def author_view(request, slug):

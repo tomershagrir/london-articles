@@ -38,6 +38,7 @@ class Post(models.Model):
     markup = models.CharField(max_length=20, blank=True, choices=RENDER_TYPE_CHOICES, default=RENDER_TYPE_RAW)
     text = models.TextField()
     teaser = models.TextField()
+    template_name = models.CharField(max_length=100, blank=True)
     is_draft = models.BooleanField(blank=True, null=False, default=True)
     date = models.DateTimeField(blank=True, default=datetime.now)    
     site = models.ForeignKey(Site, related_name='posts')
