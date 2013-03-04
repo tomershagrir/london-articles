@@ -59,10 +59,10 @@ class Post(models.Model):
         except ImportError:
             dynamic_url_patterns = []
         
-#        try: 
-        return reverse("articles_views_view", kwargs=kwargs, dynamic_url_patterns=dynamic_url_patterns)
-#        except:
-#            return '/'+self['slug']
+        try: 
+            return reverse("articles_views_view", kwargs=kwargs, dynamic_url_patterns=dynamic_url_patterns)
+        except:
+            return '/'+self['slug']
 
     def __unicode__(self):
         return self['name']
