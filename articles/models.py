@@ -4,6 +4,7 @@ from london.apps.sites.models import Site
 from london.apps.auth.models import User
 from london.utils.safestring import mark_safe
 from london.urls import reverse
+from london.apps.collections.models import Collection
 
 from datetime import datetime
 
@@ -25,8 +26,30 @@ class Category(models.Model):
         ordering = ('name', )
     name = models.CharField(max_length=50)
 
+class PostQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(is_draft=False)
+    
+    def by_collection(self, collection_name):
+        try:
+            collection = Collection.query().get(name = collection_name)
+            items = collection['items']
+        except Collection.DoesNotExist:
+            items = []
+        return self.filter(pk__in = items)
+    
+    def except_collection(self, collection_name):
+        try:
+            collection = Collection.query().get(name = collection_name)
+            items = collection['items']
+        except Collection.DoesNotExist:
+            items = []
+        return self.filter(pk__notin = items)
+    
+
 class Post(models.Model):
     class Meta:
+        query = 'articles.models.PostQuerySet'
         ordering = ('-date', )
         permissions = tuple(
                 ('can_post_to_%s' % site_name[0],
@@ -71,9 +94,13 @@ class Post(models.Model):
     def get_teaser(self):
         return mark_safe(self['teaser'])
 
-    def get_previous_post(self):
+    def get_previous_post(self, collection_name, without=True):
         if not hasattr(self, '_previous_post'):
             posts = Post.query().filter(site=self['site'], is_draft=False, date__lt=self['date']).order_by('date')
+            if without:
+                posts = posts.except_collection(collection_name)
+            else:
+                posts = posts.by_collection(collection_name)
             try:
                 self._previous_post = posts[0]
             except IndexError:
@@ -81,9 +108,13 @@ class Post(models.Model):
 
         return self._previous_post
 
-    def get_next_post(self):
+    def get_next_post(self, collection_name, without=True):
         if not hasattr(self, '_next_post'):
             posts = Post.query().filter(site=self['site'], is_draft=False, date__gt=self['date']).order_by('-date')
+            if without:
+                posts = posts.except_collection(collection_name)
+            else:
+                posts = posts.by_collection(collection_name)
             try:
                 self._next_post = posts[0]
             except IndexError:
