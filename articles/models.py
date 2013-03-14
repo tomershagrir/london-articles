@@ -56,11 +56,12 @@ class Post(models.Model):
         
         try:
             from routes import dynamic_url_patterns
+            url_patterns = dynamic_url_patterns[self['site']['name']] if self['site']['name'] in dynamic_url_patterns else []
         except ImportError:
-            dynamic_url_patterns = []
+            url_patterns = []
         
         try: 
-            return reverse("articles_views_view", kwargs=kwargs, dynamic_url_patterns=dynamic_url_patterns)
+            return reverse("articles_views_view", kwargs=kwargs, dynamic_url_patterns=url_patterns)
         except:
             return '/'+self['slug']
 
