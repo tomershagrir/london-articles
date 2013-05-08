@@ -32,6 +32,9 @@ def user_is_writer(func):
 
 def user_is_writer_or_operator(func):
     def _inner(*args, **kwargs):
+        if not self_and_request_for:
+            return func(*args, **kwargs)
+        
         self, request, args, kwargs = self_and_request_for(*args, **kwargs)
 
         if not is_writer(request.user):
@@ -44,7 +47,6 @@ def user_is_writer_or_operator(func):
         return func(request, *args, **kwargs)
     return _inner
 
-@user_is_writer_or_operator
 def list(request, template='post_list', site=None, queryset_function=None):
     if isinstance(site, basestring):
         site = Site.query().get(name=site)
