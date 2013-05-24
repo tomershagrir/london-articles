@@ -64,7 +64,8 @@ class Post(models.Model):
     text = models.TextField()
     teaser = models.TextField()
     is_draft = models.BooleanField(blank=True, null=False, default=True)
-    date = models.DateTimeField(blank=True, null=False, default=datetime.now)    
+    created_date = models.DateTimeField(blank=True, null=False, default=datetime.now)    
+    date = models.DateTimeField(blank=True, null=False)
     site = models.ForeignKey(Site, related_name='posts')
 
     def get_categories(self):
@@ -85,6 +86,7 @@ class Post(models.Model):
         source = image_compiler.render(source) or source
         if source is not None:
             self['text'] = markdown2.markdown(source)
+        self['date'] = datetime.now()
 
         return super(Post, self).save(**kwargs)
 
