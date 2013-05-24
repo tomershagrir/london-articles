@@ -65,7 +65,7 @@ class Post(models.Model):
     teaser = models.TextField()
     is_draft = models.BooleanField(blank=True, null=False, default=True)
     created_date = models.DateTimeField(blank=True, null=False, default=datetime.now)    
-    date = models.DateTimeField(blank=True, null=False)
+    date = models.DateTimeField(blank=True, null=False, verbose_name='Updated Date')
     site = models.ForeignKey(Site, related_name='posts')
 
     def get_categories(self):
