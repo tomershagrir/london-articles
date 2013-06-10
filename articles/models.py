@@ -98,11 +98,7 @@ class Post(models.Model):
 
     def get_previous_post(self, collection_name):
         if not hasattr(self, '_previous_post'):
-            posts = Post.query().filter(site=self['site'], is_draft=False, created_date__lt=self['created_date']).order_by('-created_date')
-#            if without:
-#                posts = posts.except_collection(collection_name)
-#            else:
-            posts = posts.by_collection(collection_name)
+            posts = Post.query().filter(site=self['site'], is_draft=False, created_date__lt=self['created_date']).order_by('-created_date').by_collection(collection_name)
             try:
                 self._previous_post = posts[0]
             except IndexError:
@@ -112,11 +108,7 @@ class Post(models.Model):
 
     def get_next_post(self, collection_name):
         if not hasattr(self, '_next_post'):
-            posts = Post.query().filter(site=self['site'], is_draft=False, created_date__gt=self['created_date']).order_by('created_date')
-#            if without:
-#                posts = posts.except_collection(collection_name)
-#            else:
-            posts = posts.by_collection(collection_name)
+            posts = Post.query().filter(site=self['site'], is_draft=False, created_date__gt=self['created_date']).order_by('created_date').by_collection(collection_name)
             try:
                 self._next_post = posts[0]
             except IndexError:
